@@ -76,8 +76,12 @@ let code;
     res.json(response.data)
 
     // Redirect the user to cabinets route
-    res.redirect('/cabinets/viewCabinets');
-    
+    /*res.redirect('/cabinets/viewCabinets', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });*/
+
 } catch (error) {
     // Handle error
     console.error('Error while requesting token:', error);
