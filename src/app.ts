@@ -9,6 +9,8 @@ const oauthRouter = require('./routes/oauthRoute.ts');
 
   // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({limit:'200mb'}));
+
 app.use('/oauth', oauthRouter);
 
 const client_id = process.env.CLIENT_ID;
@@ -19,6 +21,7 @@ const scope = process.env.SCOPE;
 const grant_type = process.env.GRANT_TYPE;
 
 let accessToken;
+let code;
 // Login endpoint (with LDAP in production)
   app.get('/login', (req,res)=>{
     console.log("/login")
@@ -38,14 +41,14 @@ let accessToken;
   app.get('/callback', async (req,res)=>{
     console.log("callback");
     //pull code from url
-    const code = req.query.code;
+     code = req.query.code;
     console.log("Authorization code: " + code);
- 
+    console.log("client id: " + client_id)
     // Parameters required for the token endpoint request
     const tokenParams = {
       url: 'http://localhost:3000/oauth/token',
       method: 'POST',
-      form: {
+      data: {
           client_id: client_id,
           client_secret: client_secret,
           redirect_uri: 'http://localhost:3000/callback', // Your callback URL
@@ -54,9 +57,9 @@ let accessToken;
       }
   };
   try {
-    console.log(tokenParams.form.grant_type)
+    console.log(tokenParams.data.grant_type)
     // Make a POST request to the token endpoint and await the response
-    const response = await axios.post('http://localhost:3000/oauth/token', tokenParams);
+    const response = await axios.post(tokenParams.url, tokenParams.data);
     console.log("token post req");
     // Handle successful response
     const accessToken = response.data.access_token;
@@ -71,7 +74,7 @@ let accessToken;
     console.log(accessToken);
     res.json(response.data)
     // Redirect the user to a different page in your application
-   // res.redirect('/profile');
+    res.redirect('/profile');
 } catch (error) {
     // Handle error
     console.error('Error while requesting token:', error);
@@ -84,3 +87,4 @@ let accessToken;
 app.listen(PORT, () => {
     console.log(`Authorization server is running on http://localhost:${PORT}`);
   });
+

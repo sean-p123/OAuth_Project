@@ -50,32 +50,30 @@ router.post('/token', (req, res) => {
     const { code, client_id, client_secret, redirect_uri, grant_type } = req.body;
     //const grant_type = req.body.grant_type;
     console.log("before req")
-    console.log(req.data)
+    console.log(req.body)
 
     if (code !== "abc123") {
-        console.log("code: " + code);
-       // return res.status(400).send('Invalid authorization code');
+        return res.status(400).send('Invalid authorization code');
     }
 
-    // Validate grant_type (for demonstration, we'll only handle 'authorization_code' grant type)
+
+    // Validate grant_type (for demo, we'll only handle 'authorization_code' grant type)
     if (grant_type !== process.env.GRANT_TYPE) {
-//        return res.status(400).send('Unsupported grant type');
+        return res.status(400).send('Unsupported grant type');
     }
 
-    // Validate client credentials (you should compare with stored client credentials)
+    // Validate client credentials
     if (client_id !== process.env.CLIENT_ID || client_secret !== process.env.CLIENT_SECRET) {
-       // return res.status(401).send('Unauthorized: Invalid client credentials');
+        return res.status(401).send('Unauthorized: Invalid client credentials');
     }
 
-    // Simulate exchanging authorization code for access token
-    // In a real implementation, this would involve validating the authorization code,
-    // generating and returning an access token, and optionally a refresh token.
-
-    const accessToken = 'xyz789'; // Simulated access token
+    //generate access token here
+    const accessToken = 'xyz789'; // mock access token
     res.json({
         access_token: accessToken,
         token_type: 'bearer',
-        expires_in: 3600 // Access token expiration time in seconds (e.g., 1 hour)
+        expires_in: 3600 // 1 hour
     });
 });
+
 module.exports = router;
