@@ -14,6 +14,7 @@ app.use(bodyParser.json({limit:'200mb'}));
 app.use('/oauth', oauthRouter);
 app.use('/cabinets', cabinetRoute);
 
+//pull all variables from .env file
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 const redirect_uri = process.env.REDIRECT_URI;
@@ -36,7 +37,6 @@ let code;
     //  const url = `/route?param1=${param1}&param2=${param2}`;
     res.redirect(`/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&scope=${scope}`);
 
-   // res.redirect('/oauth/authorize');
   });
 
   app.get('/callback', async (req,res)=>{
@@ -52,7 +52,7 @@ let code;
       data: {
           client_id: client_id,
           client_secret: client_secret,
-          redirect_uri: 'http://localhost:3000/callback', // Your callback URL
+          redirect_uri: 'http://localhost:3000/callback',
           code: code,
           grant_type: grant_type
       }
@@ -62,34 +62,19 @@ let code;
     // Make a POST request to the token endpoint and await the response
     const response = await axios.post(tokenParams.url, tokenParams.data);
     console.log("token post req");
+
     // Handle successful response
     const accessToken = response.data.access_token;
-  //   const accessToken = req.body.access_token;
-    //console.log("access token: " + accessToken);
-   // console.log(response.res.access_token);
-  /* console.log('Token Endpoint Response:', {
-    status: response.status,
-    headers: response.headers,
-    data: response.data // Log only the necessary data
-});*/
+  
+    //use this token in the header of all requests to get access
     console.log(accessToken);
     res.json(response.data)
-
-    // Redirect the user to cabinets route
-    /*res.redirect('/cabinets/viewCabinets', {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
-    });*/
 
 } catch (error) {
     // Handle error
     console.error('Error while requesting token:', error);
     res.status(500).send('Internal server error');
 }
-  //redirect to /token with the authorization code provided 
-   // res.redirect(`/oauth/token?code=${code}&client_id=${client_id}&redirect_uri=${redirect_uri}&grant_type=${grant_type}`)
-    //res.send("Callback works")
   })
 app.listen(PORT, () => {
     console.log(`Authorization server is running on http://localhost:${PORT}`);

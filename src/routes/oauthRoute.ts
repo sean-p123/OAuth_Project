@@ -4,7 +4,7 @@ const jsonwebtoken = require('jsonwebtoken');
 
 const router = express1.Router();
 
-
+//test data
 const users = [
     { id: 1, username: 'user1', password: 'password1', role: 'user' },
     { id: 2, username: 'admin', password: 'admin', role: 'admin' }
@@ -50,16 +50,16 @@ router.post('/token', (req, res) => {
     console.log("/token");
 
     const { code, client_id, client_secret, redirect_uri, grant_type } = req.body;
-    //const grant_type = req.body.grant_type;
+    
     console.log("before req")
-    console.log(req.body)
+    //console.log(req.body)
 
     if (code !== "abc123") {
         return res.status(400).send('Invalid authorization code');
     }
 
 
-    // Validate grant_type (for demo, we'll only handle 'authorization_code' grant type)
+    // Validate grant_type 
     if (grant_type !== process.env.GRANT_TYPE) {
         return res.status(400).send('Unsupported grant type');
     }
