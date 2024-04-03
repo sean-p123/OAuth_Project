@@ -1,4 +1,5 @@
 const express1 = require('express')
+const jsonwebtoken = require('jsonwebtoken');
 //const { Router } = express1;
 
 const router = express1.Router();
@@ -9,6 +10,7 @@ const users = [
     { id: 2, username: 'admin', password: 'admin', role: 'admin' }
   ];
 
+  let user;
 
 // Authorization endpoint
 router.get('/authorize', (req, res) => {
@@ -21,7 +23,7 @@ router.get('/authorize', (req, res) => {
     }
   
     // Simulate user authentication
-    const user = users.find(user => user.id === 1); // Assuming user with id 1 is authenticated
+    user = users.find(user => user.id === 1); // Assuming user with id 1 is authenticated
   
     if (!user) {
       return res.status(401).send('Unauthorized');
@@ -68,7 +70,9 @@ router.post('/token', (req, res) => {
     }
 
     //generate access token here
-    const accessToken = 'xyz789'; // mock access token
+    const accessToken = jsonwebtoken.sign(user, client_secret, { expiresIn: '1h' });
+    console.log("token:" + accessToken)
+    //const accessToken = 'xyz789'; // mock access token
     res.json({
         access_token: accessToken,
         token_type: 'bearer',

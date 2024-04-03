@@ -6,12 +6,13 @@ const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 
 const oauthRouter = require('./routes/oauthRoute.ts');
-
+const cabinetRoute = require('./routes/cabinetRoute.ts');
   // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({limit:'200mb'}));
 
 app.use('/oauth', oauthRouter);
+app.use('/cabinets', cabinetRoute);
 
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
@@ -73,8 +74,10 @@ let code;
 });*/
     console.log(accessToken);
     res.json(response.data)
-    // Redirect the user to a different page in your application
-    res.redirect('/profile');
+
+    // Redirect the user to cabinets route
+    res.redirect('/cabinets/viewCabinets');
+    
 } catch (error) {
     // Handle error
     console.error('Error while requesting token:', error);
